@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+        <script src="/js/api.js"  ></script>
+    <!-- 날짜 CDN -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+    <title> 게시판 만들기</title>
+</head>
+<style>
+    .wrap {
+        width: 900px;
+        margin: auto;
+    }
+
+    .btncls {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+    }
+
+    .btn-primary {
+        margin-left: 20px;
+    }
+    .pg_nav{
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        get_borders()
+    })
+
+    function get_borders() {
+        $("#list-box").empty()
+        $.ajax({
+            type: "GET",
+            url: `/api/borderList`,
+            data: {},
+            success: function (response) {
+                let borderList = response["borderList"]
+                for (let i = 0; i < borderList.length; i++) {
+                    //db에 저장된 date moment 포맷으로 변경
+                    let date = moment(borderList[i]['borderDate']).format('YYYY-MM-DD HH:mm')
+                    make_list(borderList[i], date)
+                }
+            }
+        })
+    }
+    function make_list(borders, date) {
+        let htmlTemp = `<tr>
+                            <td><a href='/borderDetail?borderDate=${borders["borderDate"]}'>${borders["borderTitle"]}</a></td>
+                            <td>${borders["borderUserNick"]}</td>
+                            <td>${date}</td>
+                        </tr>`
+        $("#list-box").append(htmlTemp)
+    }
+    function correct(borderDate) {
+        location.href = "/borderCorrect"
+    }
+</script>
+
+<body>
+<div id ="logout">
+    <button class="btn btn-primary" type="submit" onclick="signOut()">로그아웃</button>
+</div>
+    <div class='wrap'>
+        <h1>샘플 게시판</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:50%">제목</th>
+                    <th scope="col" style="width:20%;">작성자</th>
+                    <th scope="col" style="width:40%">작성 날짜</th>
+                </tr>
+            </thead>
+            <tbody id="list-box">
+                <tr>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="btncls">
+            <button class="btn btn-primary" type="submit" onclick="location.href='/borderWrite' ">글 쓰기</button>
+        </div>
+    </div>
+</body>
+
+</html>

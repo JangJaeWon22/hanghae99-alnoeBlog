@@ -1,0 +1,116 @@
+</html>
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+    <script src="/js/api.js"  ></script>
+  <!-- 날짜 CDN -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  <title> 게시판 만들기</title>
+</head>
+<style>
+  .wrap {
+    width: 800px;
+    margin: auto;
+  }
+
+  .form-group {
+    margin-top: 30px;
+  }
+
+  .label {
+    margin-top: 20px;
+  }
+
+  .btncls {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    margin-top: 10px;
+  }
+
+  .btn-primary {
+    margin-left: 20px;
+  }
+
+  .inputPwd {
+    -webkit-text-security: disc;
+  }
+</style>
+<script>
+  let user;
+  getSelf(function (u){
+    user = u;
+  })
+  function post_border() {
+    //현재 시각 저장할 변수
+    let date = new Date()
+    let borderDate = date.getTime()
+    $.ajax({
+      type: "POST",
+      url: `/api/borderWrite`,
+      data: {
+        //post 보낼 데이터
+        borderTitle: $("#borderName").val(),
+        borderUserNick: $("#borderUserNick").val(),
+        borderPwd: $("#borderPwd").val(),
+        borderContent: $("#borderContent").val(),
+        borderDate
+      },
+      success: function (response) {
+          alert("글이 등록 되었습니다.");
+          window.location.href="/borderList"
+      }
+  });
+  }
+</script>
+
+<body>
+  <div id ="logout">
+    <button class="btn btn-primary" type="submit" onclick="signOut()">로그아웃</button>
+</div>
+  <div class='wrap'>
+    <h1>샘플 게시판</h1>
+    <div class="form-group">
+      <div class="label">
+        <label for="exampleFormControlInput1" style="font-weight: bold;">제목 :</label>
+        <input type="text" id="borderName" />
+      </div>
+      <div class="label">
+        <label for="exampleFormControlInput1" style="font-weight: bold;">작성자 :</label>
+        <input type="text" id="borderUserNick" />
+      </div>
+      <div class="label">
+        <label for="exampleFormControlInput1" style="font-weight: bold;">비밀 번호 : </label>
+        <input class="inputPwd" id="borderPwd" type="number" placeholder="숫자를 입력하세요" />
+      </div>
+      <div class="label">
+        <label for="exampleFormControlInput1">내용</label>
+        <textarea class="form-control" id="borderContent" type="text" rows="10"></textarea>
+      </div>
+    </div>
+    <div class="btncls">
+      <button class="btn btn-primary" type="submit" onclick="post_border()">글 작성 완료</button>
+      <button class="btn btn-primary" onclick="location.href='/borderList'">뒤로 가기</button>
+    </div>
+  </div>
+</body>
+
+</html>
