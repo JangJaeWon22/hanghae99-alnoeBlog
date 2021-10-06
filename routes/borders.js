@@ -14,9 +14,8 @@ router.get("/users/me", authMiddleware, async (req, res) => {
 });
 
 
-router.post("/borderWrite",authMiddleware, async (req, res) => {
+router.post("/borderWrite", authMiddleware, async (req, res) => {
   const { userId } = res.locals.user;
-
   //작성한 정보 가져옴
   const { borderDate, borderUserNick, borderPwd, borderTitle, borderContent } =
     req.body;
