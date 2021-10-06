@@ -26,16 +26,14 @@ function signOut() {
 }
 
 function register() {
-  const email = $("#id").val();
-  const nickname = $("#nickname").val();
+  const id = $("#id").val();
   const password1 = $("#psword").val();
   const password2 = $("#confirmPsword").val();
   $.ajax({
     type: "POST",
     url: "/api/users",
     data: {
-      email: email,
-      nickname: nickname,
+      id: id,
       password: password1,
       confirmPassword: password2,
     },
@@ -50,13 +48,13 @@ function register() {
 }
 
 function sign_in() {
-  const email = $("#id").val();
+  const id = $("#id").val();
   const password = $("#psword").val();
   $.ajax({
     type: "POST",
     url: "/api/auth",
     data: {
-      email: email,
+      id: id,
       password: password,
     },
     success: function (response) {

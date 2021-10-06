@@ -1,22 +1,26 @@
 const express = require("express");
 const Border = require("../models/border");
+const User = require("../models/user")
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
 router.get("/users/me", authMiddleware, async (req, res) => {
   const { user } = res.locals;
   res.send({
-    user: {
-      email: user.email,
-      nickname: user.nickname,
-    },
+      user:{
+        userId: user.id,
+      }
   });
 });
 
-router.post("/borderWrite", async (req, res) => {
+
+router.post("/borderWrite",authMiddleware, async (req, res) => {
+  const { userId } = res.locals.user;
+
   //작성한 정보 가져옴
   const { borderDate, borderUserNick, borderPwd, borderTitle, borderContent } =
     req.body;
+
   //유효성 검사
   isExist = await Border.find({ borderDate });
   if (isExist.length == 0) {
