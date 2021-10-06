@@ -30,6 +30,9 @@
     width: 800px;
     margin: auto;
   }
+  input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 
   .form-group {
     margin-top: 30px;
@@ -58,7 +61,6 @@
   let user;
   getSelf(function (u){
     user = u;
-    console.log(user);
 })
   function post_border() {
     //현재 시각 저장할 변수
@@ -96,10 +98,6 @@
       <div class="label">
         <label for="exampleFormControlInput1" style="font-weight: bold;">제목 :</label>
         <input type="text" id="borderName" />
-      </div>
-      <div class="label">
-        <label for="exampleFormControlInput1" style="font-weight: bold;">작성자 :</label>
-        <input type="text" id="borderUserNick" />
       </div>
       <div class="label">
         <label for="exampleFormControlInput1" style="font-weight: bold;">비밀 번호 : </label>
