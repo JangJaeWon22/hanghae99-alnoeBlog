@@ -1,6 +1,5 @@
 const express = require("express");
 const Border = require("../models/border");
-const User = require("../models/user")
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
@@ -14,7 +13,7 @@ router.get("/users/me", authMiddleware, async (req, res) => {
 });
 
 
-router.post("/borderWrite", authMiddleware, async (req, res) => {
+router.post("/borderList", authMiddleware, async (req, res) => {
   const { userId } = res.locals.user;
   //작성한 정보 가져옴
   const { borderDate, borderUserNick, borderPwd, borderTitle, borderContent } =
@@ -39,8 +38,7 @@ router.get("/borderList", async (req, res) => {
   res.json({ borderList });
 });
 
-router.get("/borderList/:borderDate", authMiddleware, async (req, res) => {
-  const { userId } = res.locals.user;
+router.get("/borderList/:borderDate", async (req, res) => {
   const { borderDate } = req.params;
   const borderDetail = await Border.findOne({ borderDate });
   res.json({ borderDetail });

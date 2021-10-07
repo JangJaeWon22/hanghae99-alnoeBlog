@@ -1,8 +1,9 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const app = express();
-const userRouter = require("./routes/user")
-const borderRouter = require("./routes/borders")
+const userRouter = require("./routes/user");
+const borderRouter = require("./routes/borders");
+const commnetRouter = require("./routes/comment");
 
 mongoose.connect("mongodb://localhost/blog-demo", {
   useNewUrlParser: true,
@@ -12,8 +13,9 @@ mongoose.connect("mongodb://localhost/blog-demo", {
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 
-app.use("/api", express.urlencoded({ extended: false }) ,userRouter);
-app.use("/api", express.urlencoded({ extended: false }) ,borderRouter);
+app.use("/api", express.urlencoded({ extended: false }), userRouter);
+app.use("/api", express.urlencoded({ extended: false }), borderRouter);
+app.use("/api", express.urlencoded({ extended: false }), commnetRouter);
 // 프론트 js, ess 파일
 app.use(express.static('public')); 
 

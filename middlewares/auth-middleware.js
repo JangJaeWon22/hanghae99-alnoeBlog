@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   console.log("들어왔어")
   if (!authToken || authType !== "Bearer") {
     res.status(401).send({
-      errorMessage: "로그인 후 이용 가능한 기능입니다.!!",
+      errorMessage: "로그인 후 이용 가능한 기능입니다!",
     });
     return;
   }
@@ -15,9 +15,7 @@ module.exports = (req, res, next) => {
       const { userId } = jwt.verify(authToken, "secret-key");
       User.findById(userId).then((user) => {
         res.locals.user = user;
-        console.log("이제 나갈꺼야")
         next();
-        
       });
     } catch (err) {
       res.status(401).send({

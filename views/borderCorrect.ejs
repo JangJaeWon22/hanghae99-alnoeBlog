@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -11,7 +10,11 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-
+    <!-- fontAwesome -->
+    <script
+      src="https://kit.fontawesome.com/e8db3c7e7b.js"
+      crossorigin="anonymous"
+    ></script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -25,14 +28,16 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
-
     <!-- 날짜 CDN -->
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"
     ></script>
+    <!-- js -->
     <script src="/js/api.js"></script>
-    <title>게시판 만들기</title>
+    <!-- css -->
+    <link rel="stylesheet" href="css/board.css" />
+    <title>게시판</title>
   </head>
   <style>
     .wrap {
@@ -78,11 +83,11 @@
     });
 
     $(document).ready(function () {
-      get_detail();
+      get_correct_detail();
     });
     //상세페이지 정보
     //a 태그로 들어온 정보를 주소에 파라미터 값으로 넣어서 ajax콜을 함.
-    function get_detail() {
+    function get_correct_detail() {
       $.ajax({
         type: "GET",
         url: `api/borderList/${borderDate}`,
@@ -117,14 +122,12 @@
       });
     }
 
-    //글 수정 전 비밀번호 확인을 위해 모달창 이용
-    function modal_start() {
-      $("#cartModal").modal("show");
+    //수정 버튼 모달
+    function correct_modal_start() {
+      $("#correctModal").modal("show");
     }
 
-    //get_detail() 함수에서 가져온 비밀번호를 서로 비교 하려 했으나, 능력부족으로 인해
-    // 새로 ajax콜을 하여 값을 가져옴
-    function modal_ok() {
+    function correct_modal_ok() {
       $.ajax({
         type: "GET",
         url: `api/borderList/${borderDate}`,
@@ -135,19 +138,20 @@
           let bordersInfo = response["borderDetail"];
           //db에 저장된 비밀번호 가져오기
           let pwd = bordersInfo["borderPwd"];
-          let confirmPwd = $(borderPwd).val();
+          let confirmPwd = $(correctBorderPwd).val();
           //비밀번호 입력창에 입력한 값과 db로 가져온 pwd를 비교하여 검사
           if (pwd === confirmPwd) {
             if (bordersInfo["borderUserNick"] == user.userId) {
               correct();
             } else {
-              alert("비밀번호가 다릅니다.");
+              alert("작성자가 아닙니다.");
             }
+          } else {
+            alert("비밀번호가 다릅니다.");
           }
         },
       });
     }
-
     // 글을 수정하면서 date 값도 바꾸려고 했으나, date값은 api get할 시 필요한 데이터이기도 하고, 서버와의 연결도 date로 하기 때문에 변경 안함.
     function correct() {
       $.ajax({
@@ -161,15 +165,58 @@
         },
         success: function (response) {
           if (response["result"] == "success") {
-            alert("글이 등록 되었습니다.");
+            alert("글을 수정했습니다.");
             window.location.href = "/borderList";
           }
         },
       });
     }
-    //취소 버튼 시 뒤로가기 기능
-    function back() {
-      location.href = "javascript:history.back();";
+
+    //수정 버튼 누를 시 correct에 불러온 bordersDetail를 가져오고 그중 borderDate를 불러온다.
+    //이후 파라미터 값으로 가져온다.
+    //실제 게시글 주인 전역변수 선언
+    //삭제 버튼 클릭시 모달 스타트
+    function remove_modal_start() {
+      $("#removeModal").modal("show");
+    }
+
+    function remove() {
+      $.ajax({
+        type: "DELETE",
+        url: `/api/borderList/${borderDate}`,
+        data: {},
+        success: function (response) {
+          if (response["result"] == "success") {
+            alert("글을 삭제했습니다.")
+            location.href = "/borderList";
+          }
+        },
+      });
+    }
+    function remove_modal_ok() {
+      $.ajax({
+        type: "GET",
+        url: `api/borderList/${borderDate}`,
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        success: function (response) {
+          let bordersInfo = response["borderDetail"];
+          //db에 저장된 비밀번호 가져오기
+          let pwd = bordersInfo["borderPwd"];
+          let confirmPwd = $(removeBorderPwd).val();
+          //비밀번호 입력창에 입력한 값과 db로 가져온 pwd를 비교하여 검사
+          if (pwd === confirmPwd) {
+            if (bordersInfo["borderUserNick"] == user.userId) {
+              remove();
+            } else {
+              alert("작성자가 아닙니다.");
+            }
+          } else {
+            alert("비밀번호가 다릅니다.");
+          }
+        },
+      });
     }
   </script>
 
@@ -211,8 +258,19 @@
         </div>
       </div>
       <div class="btncls">
-        <button class="btn btn-primary" type="submit" onclick="modal_start()">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          onclick="correct_modal_start()"
+        >
           수정 완료
+        </button>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          onclick="remove_modal_start()"
+        >
+          삭제
         </button>
         <button class="btn btn-primary" type="submit" onclick="back()">
           취소
@@ -221,7 +279,7 @@
     </div>
     <div
       class="modal text-left"
-      id="cartModal"
+      id="correctModal"
       tabindex="-1"
       role="dialog"
       aria-labelledby="cartModalLabel"
@@ -243,12 +301,63 @@
           <div class="modal-body">비밀번호를 입력하세요</div>
           <input
             class="inputPwd"
-            id="borderPwd"
+            id="correctBorderPwd"
             type="number"
             placeholder="숫자를 입력하세요"
           />
           <div class="modal-footer">
-            <button type="button" class="btn btn-sparta" onclick="modal_ok()">
+            <button
+              type="button"
+              class="btn btn-sparta"
+              onclick="correct_modal_ok()"
+            >
+              확인
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-sparta"
+              data-dismiss="modal"
+            >
+              취소
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal text-left"
+      id="removeModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="cartModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cartModalLabel">알림</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">비밀번호를 입력하세요</div>
+          <input
+            class="inputPwd"
+            id="removeBorderPwd"
+            type="number"
+            placeholder="숫자를 입력하세요"
+          />
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-sparta"
+              onclick="remove_modal_ok()"
+            >
               확인
             </button>
             <button
