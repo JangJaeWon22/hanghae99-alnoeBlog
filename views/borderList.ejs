@@ -62,6 +62,7 @@
 
   <script>
     $(document).ready(function () {
+      login_logout()
       get_borders();
     });
 
@@ -98,9 +99,8 @@
 
   <body>
     <div id="logout">
-      <button class="btn btn-primary" type="submit" onclick="signOut()">
-        로그아웃
-      </button>
+      <button id="logIn-btn" class="btn btn-primary" type="submit" onclick="signInBtn()">로그인</button>
+      <button id="logOut-btn" style= "display:none;" class="btn btn-primary" type="submit" onclick="signOut()">로그아웃</button>
     </div>
     <div class="wrap">
       <h1>샘플 게시판</h1>

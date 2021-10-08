@@ -257,3 +257,11 @@ function removeComment(commentId) {
     },
   });
 }
+
+
+function login_logout(){
+  if(localStorage.getItem("token")){
+      $("#logIn-btn").hide()
+      $("#logOut-btn").show()
+  }
+}

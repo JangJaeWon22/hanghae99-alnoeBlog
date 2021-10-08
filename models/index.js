@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const connect = () => {
    return mongoose
-      .connect("mongodb://localhost/blog-demo", {
+      .connect("mongodb://test:test@3.34.44.44:27017/test?authSource=admin", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       })
@@ -16,3 +16,7 @@ mongoose.connection.on("error", err => {
 module.exports = connect;
 
 
+//mongodb://localhost:27017//test
+//mongodb://아뒤:비번@주소:27017/test?authSource=admin
+
+ 

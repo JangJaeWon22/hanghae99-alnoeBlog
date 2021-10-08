@@ -44,8 +44,9 @@
   const borderDate = urlParams.get("borderDate");
 
   $(document).ready(function (response) {
-  get_detail();
-  get_comment();
+    login_logout()
+    get_detail();
+    get_comment();
   });
     
 
@@ -91,9 +92,8 @@
 
   <body>
     <div id="logout">
-      <button class="btn btn-primary" type="submit" onclick="signOut()">
-        로그아웃
-      </button>
+      <button id="logIn-btn" class="btn btn-primary" type="submit" onclick="signInBtn()">로그인</button>
+      <button id="logOut-btn" style= "display:none;" class="btn btn-primary" type="submit" onclick="signOut()">로그아웃</button>
     </div>
     <div class="wrap">
       <h1>게시판</h1>
