@@ -1,3 +1,4 @@
+const app = require("../app")
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
@@ -12,7 +13,7 @@ module.exports = (req, res, next) => {
     return;
   }
     try {
-      const { userId } = jwt.verify(authToken, "1q2w3e4r1!");
+      const { userId } = jwt.verify(authToken, process.env.JWT_SECRET);
       User.findById(userId).then((user) => {
         res.locals.user = user;
         next();

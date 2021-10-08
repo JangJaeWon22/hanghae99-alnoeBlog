@@ -6,7 +6,6 @@ const router = express.Router();
 const User = require("../models/user");
 const authMiddleware = require("../middlewares/auth-middleware");
 
-
 //joi 활용 회원가입
 const postUsersSchema = Joi.object({
   id: Joi.string().alphanum().min(3).max(30).required(),
@@ -66,7 +65,7 @@ router.post("/auth", async (req, res) => {
       });
       return;
     }
-    const token = jwt.sign({ userId: user.userId }, "1q2w3e4r1!");
+    const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET);
     res.send({
       token,
     });

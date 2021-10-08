@@ -5,8 +5,7 @@ const { Schema } = mongoose;
     const commentSchema = new Schema({
         commentId: {
             type: Number,
-            required:true,
-            unique: true,
+            required:true
         },
         commentMain: {
             type: String,
