@@ -265,3 +265,7 @@ function login_logout(){
       $("#logOut-btn").show()
   }
 }
+
+function signInBtn() {
+  window.location.href="/login"
+}
