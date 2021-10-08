@@ -4,6 +4,8 @@ const app = express();
 const userRouter = require("./routes/user");
 const borderRouter = require("./routes/borders");
 const commnetRouter = require("./routes/comment");
+const dotenv =  require("dotenv"); // 어떤 os에서 사용하더라도 환경변수를 설정하고 사용할 수 있다!
+dotenv.config()
 
 mongoose.connect("mongodb://localhost/blog-demo", {
   useNewUrlParser: true,

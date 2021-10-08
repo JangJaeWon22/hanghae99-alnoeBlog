@@ -19,6 +19,7 @@ router.post("/borderList/:borderDate/comment", authMiddleware, async (req, res) 
   const { borderDate } = req.params;
   iscommentId = await Comment.find({borderDate});
   commentId = iscommentId.length + 1;
+  console.log(commentId)
   const { commentMain, commentDate } = req.body;
   await Comment.create({
     commentId,
@@ -31,10 +32,11 @@ router.post("/borderList/:borderDate/comment", authMiddleware, async (req, res) 
 });
 
 //댓글 가져오기
-router.get("/borderList/:borderDate/comment", async (req, res) => {
+router.get("/borderList/:borderDate/comment", authMiddleware, async (req, res) => {
+    const userId = res.locals.user.id;
     const { borderDate } = req.params;
     const commentList = await Comment.find({ borderDate }).sort("-commentDate");
-    res.json({ commentList })
+    res.json({ commentList, userId })
 })
 
 //댓글 수정
@@ -44,6 +46,11 @@ router.patch("/borderList/:borderDate/comment/:commentId", authMiddleware, async
   const isBorderDate = await Comment.find({
     $and : [{borderDate}, {commentId}]
     });
+    if( commentMain == "" || commentMain == " "){
+      res.status(400).send({
+        errorMessage: "댓글의 내용을 입력해주세요.",
+      });
+    }
   if (isBorderDate.length > 0) {
     await Comment.updateOne(
       { commentId },

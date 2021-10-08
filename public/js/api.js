@@ -44,6 +44,7 @@ function register() {
     },
     success: function (response) {
       alert("회원가입을 축하드립니다.");
+      window.location.href = "/login";
     },
     error: function (error) {
       alert(error.responseJSON.errorMessage);
@@ -101,7 +102,7 @@ function post_comment() {
       authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     data: {
-      commentMain:$("#comment").val(),
+      commentMain:$("#comment-area").val(),
       commentDate,
     },
     success: function (response){
@@ -125,42 +126,68 @@ function get_comment() {
       authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     success: function(response) {
+      const tokenUserId = response['userId']
       let commentList = response["commentList"];
       for(let i = 0 ; i < commentList.length;  i ++){
         let commentDate = commentList[i]["commentDate"];
         let date = moment(commentDate).format(
             "YYYY-MM-DD HH:mm"
           );
-        make_commentlist(commentList[i], date);
+        make_commentlist(commentList[i], date, tokenUserId);
       }
     },
   });
 }
 //댓글 찍어내기
-function make_commentlist(comments, date) {
-    let htmlTemp = `<div class="main-box">
-                      <div class="box-top">
-                        <div class="top-box1">
-                          <strong>${comments["commentUserNick"]}</strong>
-                          <small>${date}</small>
+function make_commentlist(comments, date, tokenUserId) {
+  const { commentId,commentMain,commentUserNick } = comments;
+  if(commentUserNick == tokenUserId){
+      let htmlTemp = `<div class="main-box">
+                        <div class="box-top">
+                          <div class="top-box1">
+                            <strong>${commentUserNick}</strong>
+                            <small>${date}</small>
+                          </div>
+                          <div class="top-box2" id="icons-${commentId}">
+                            <i id="edit-icon" onclick="onCorrectBtn(${commentId})" class="far fa-edit"></i>
+                            <i id="delete-icon" onclick="onRemoveBtn(${commentId})" class="fas fa-trash-alt"></i>
+                          </div>
                         </div>
-                        <div class="top-box2">
-                          <i id="editcon" onclick="onCorrectBtn(${comments.commentId})" class="far fa-edit"></i>
-                          <i id="delete-icon" onclick="onRemoveBtn(${comments.commentId})" class="fas fa-trash-alt"></i>
+                        <div class= box-center>
+                          <input id= "mainComment-${commentId}" class="comment-input" value="${commentMain}" disabled>
+                          <input id= "afterComment-${commentId}" type="text" style="display: none;" class="correct-input" value="${commentMain}">
+                          <div class="btn-grob">
+                            <button id= "commentSave-${commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="correctComment( ${comments["commentId"]})">저장하기</button>
+                            <button id= "commentRemove-${commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="removeComment(${comments["commentId"]})">삭제하기</button>
+                            <button id= "commentCancle-${commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="offBtn(${commentId})"}>취소하기</button>
+                          </div>
                         </div>
-                      </div>
-                      <div class= box-center>
-                        <input id= "mainComment-${comments.commentId}" class="comment-input" value="${comments["commentMain"]}" disabled>
-                        <input id= "afterComment-${comments.commentId}" type="text" style="display: none;" class="correct-input" value="${comments["commentMain"]}">
-                        <div class="btn-grob">
-                          <button id= "commentSave-${comments.commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="correctComment( ${comments["commentId"]})">저장하기</button>
-                          <button id= "commentRemove-${comments.commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="removeComment(${comments["commentId"]})">삭제하기</button>
-                          <button id= "commentCancle-${comments.commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="offBtn(${comments.commentId})"}>취소하기</button>
-                        </div>
-                      </div>
-                    </div>`
-    $("#comment-box").append(htmlTemp);
+                      </div>`
+      $("#comment-box").append(htmlTemp);
+  }else {
+          let htmlTemp = `<div class="main-box">
+                              <div class="box-top">
+                                <div class="top-box1">
+                                  <strong>${commentUserNick}</strong>
+                                  <small>${date}</small>
+                                </div>
+                              </div>
+                              <div class= box-center>
+                                <input id= "mainComment-${commentId}" class="comment-input" value="${commentMain}" disabled>
+                                <input id= "afterComment-${commentId}" type="text" style="display: none;" class="correct-input" value="${commentMain}">
+                                <div class="btn-grob">
+                                  <button id= "commentSave-${commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="correctComment( ${comments["commentId"]})">저장하기</button>
+                                  <button id= "commentRemove-${commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="removeComment(${comments["commentId"]})">삭제하기</button>
+                                  <button id= "commentCancle-${commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="offBtn(${commentId})"}>취소하기</button>
+                                </div>
+                              </div>
+                            </div>`
+      $("#comment-box").append(htmlTemp);
   }
+  }
+
+
+
 
 function onCorrectBtn(commentId){
   $("#commentSave-" + commentId).show();
@@ -203,10 +230,13 @@ function correctComment(commentId) {
     },
     success: function (response) {
       if (response["result"] == "success") {
-        alert("글을 수정했습니다.");
+          alert("글을 수정했습니다.");
         window.location.href = `/borderDetail?borderDate=${borderDate}`
       }
-    }
+    },
+    error: function (error) {
+      alert(error.responseJSON.errorMessage);
+    },
   });
 }
 
