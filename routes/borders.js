@@ -1,5 +1,6 @@
 const express = require("express");
 const Border = require("../models/border");
+const Comment = require("../models/comment")
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
@@ -63,8 +64,12 @@ router.patch("/borderList/:borderDate", async (req, res) => {
 router.delete("/borderList/:borderDate", async (req, res) => {
   const { borderDate } = req.params;
   const isBorder = await Border.find({ borderDate });
+  const isComment = await Comment.find({ borderDate });
   if (isBorder.length > 0) {
     await Border.deleteOne({ borderDate });
+  }
+  if(isComment.length > 0){
+    await Comment.deleteMany({ borderDate })
   }
   res.send({ result: "success" });
 });

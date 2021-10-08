@@ -19,7 +19,6 @@ router.post("/borderList/:borderDate/comment", authMiddleware, async (req, res) 
   const { borderDate } = req.params;
   iscommentId = await Comment.find({borderDate});
   commentId = iscommentId.length + 1;
-  console.log(commentId)
   const { commentMain, commentDate } = req.body;
   await Comment.create({
     commentId,
