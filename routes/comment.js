@@ -38,7 +38,7 @@ router.get("/borderList/:borderDate/comment", async (req, res) => {
 })
 
 //댓글 수정
-router.patch("/borderList/:borderDate/comment/:commentId", async (req, res) => {
+router.patch("/borderList/:borderDate/comment/:commentId", authMiddleware, async (req, res) => {
   const { borderDate , commentId } = req.params;
   const { commentMain, commentCorrectDate } = req.body;
   const isBorderDate = await Comment.find({
@@ -54,7 +54,7 @@ router.patch("/borderList/:borderDate/comment/:commentId", async (req, res) => {
 });
 
 //댓글 삭제
-router.delete("/borderList/:borderDate/comment/:commentId", async (req, res) => {
+router.delete("/borderList/:borderDate/comment/:commentId", authMiddleware, async (req, res) => {
   const { borderDate , commentId } = req.params;
   const isBorderDate = await Comment.find({
     $and : [{borderDate}, {commentId}]

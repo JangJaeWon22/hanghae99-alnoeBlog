@@ -56,8 +56,10 @@
   .comment-input{
     border-style: none;
     background-color: white;
+    width: 500px;
   }
 
-  /* .btn-grob {
-    display: none;
-  } */
+  .correct-input{
+    width:500px;
+    margin-right: 20px;
+  }

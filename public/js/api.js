@@ -145,36 +145,60 @@ function make_commentlist(comments, date) {
                           <small>${date}</small>
                         </div>
                         <div class="top-box2">
-                          <a href="#"><i id="edit-icon" class="far fa-edit"></i></a>
-                          <a><i id="delete-icon" class="fas fa-trash-alt"></i></a>
+                          <i id="editcon" onclick="onCorrectBtn(${comments.commentId})" class="far fa-edit"></i>
+                          <i id="delete-icon" onclick="onRemoveBtn(${comments.commentId})" class="fas fa-trash-alt"></i>
                         </div>
                       </div>
                       <div class= box-center>
-                        <input id= "mainComment-${comments.commentId}" class="comment-input" value="${comments["commentMain"]}">
+                        <input id= "mainComment-${comments.commentId}" class="comment-input" value="${comments["commentMain"]}" disabled>
+                        <input id= "afterComment-${comments.commentId}" type="text" style="display: none;" class="correct-input" value="${comments["commentMain"]}">
                         <div class="btn-grob">
-                          <button id= "comment-save" type="button" class="btn btn-primary" onClick="correctComment( ${comments["commentId"]}, ${comments["commentMain"]} )">저장하기</button>
-                          <button id= "comment-remove" type="button" class="btn btn-primary" onClick="removeComment(${comments["commentId"]})">삭제하기</button>
-                          <button id= "comment-cancle" type="button" class="btn btn-primary">취소하기</button>
+                          <button id= "commentSave-${comments.commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="correctComment( ${comments["commentId"]})">저장하기</button>
+                          <button id= "commentRemove-${comments.commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="removeComment(${comments["commentId"]})">삭제하기</button>
+                          <button id= "commentCancle-${comments.commentId}" type="button" style="display: none;" class="btn btn-primary" onClick="offBtn(${comments.commentId})"}>취소하기</button>
                         </div>
                       </div>
                     </div>`
     $("#comment-box").append(htmlTemp);
   }
 
+function onCorrectBtn(commentId){
+  $("#commentSave-" + commentId).show();
+  $("#commentCancle-" + commentId).show();
+  $("#mainComment-" + commentId).hide()
+  $("#afterComment-" + commentId).show();
+}
+
+function onRemoveBtn(commentId){
+  $("#commentRemove-" + commentId).show();
+  $("#commentCancle-" + commentId).show();
+}
+
+function offBtn(commentId){
+  $("#commentSave-" + commentId).hide();
+  $("#commentRemove-" + commentId).hide();
+  $("#commentCancle-" + commentId).hide();
+  $("#mainComment-" + commentId).show()
+  $("#afterComment-" + commentId).hide();
+}
+
 //댓글 수정
-function correctComment(commentId, comment) {
+function correctComment(commentId) {
   let date = new Date();
   let commentCorrectDate = date.getDate();
-  let mainComment = "#mainComment-" + commentId
+  // let mainComment = "#mainComment-" + commentId
   // console.log( $("#mainComment-1").val() )
   // console.log( $("#mainComment-" + commentId).val() )
 
   $.ajax({
     type:"PATCH",
     url:`/api/borderList/${borderDate}/comment/${commentId}`,
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     data: {
       //바뀐 데이터
-      commentMain: $("#mainComment-" + commentId).val(),
+      commentMain: $("#afterComment-" + commentId).val(),
       commentCorrectDate,
     },
     success: function (response) {
@@ -191,6 +215,9 @@ function removeComment(commentId) {
   $.ajax({
     type: "DELETE",
     url: `/api/borderList/${borderDate}/comment/${commentId}`,
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     data: {},
     success: function (response) {
       if (response["result"] == "success") {
