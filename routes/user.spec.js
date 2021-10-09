@@ -1,14 +1,14 @@
-const connect = require("../models/index");
-const app = require("../app");
-const supertest = require('supertest');
-const User = require("../models/user");
+const connect = require('../models/index')
+const app = require('../app')
+const supertest = require('supertest')
+const User = require('../models/user')
 
-const userIds = [];
+const userIds = []
 beforeAll(async () => {
-    await connect();
-    const user = await User.create({ id: 'people', password:"1234"});
-    userIds.push(user._id);
-});
+    await connect()
+    const user = await User.create({ id: 'people', password: '1234' })
+    userIds.push(user._id)
+})
 
 describe('test for auth', () => {
     it('비밀번호에 아이디내용 포함', async () => {
@@ -16,10 +16,12 @@ describe('test for auth', () => {
             id: 'another',
             password: 'another',
             confirmPassword: 'another',
-        });
-        expect(res.status).toBe(400);
-        expect(res.text).toBe('비밀번호 4자 이상이며 아이디를 포함하면 안됩니다.');
-    });
+        })
+        expect(res.status).toBe(400)
+        expect(res.text).toBe(
+            '비밀번호 4자 이상이며 아이디를 포함하면 안됩니다.'
+        )
+    })
 
     // it('아이디 중복', async () => {
     //     const res = await supertest(app).post('/api/users').send({
@@ -50,7 +52,6 @@ describe('test for auth', () => {
     //     expect(res.status).toBe(400);
     //     expect(res.text).toBe('닉네임은 3자 이상이며 알파벳(대소문자), 숫자(0~9)를 포함해야됩니다.');
     // });
-    
 
     // it('비밀번호와 비밀번호 확인 불일치', async () => {
     //     const res = await supertest(app).post('/api/users').send({
@@ -61,8 +62,8 @@ describe('test for auth', () => {
     //     expect(res.status).toBe(400);
     //     expect(res.text).toBe('패스워드가 패스워드 확인란과 일치하지 않습니다.');
     // });
-});
+})
 
 afterAll(async () => {
-    await User.deleteMany({ _id: userIds });
-});
+    await User.deleteMany({ _id: userIds })
+})
