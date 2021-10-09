@@ -3,6 +3,7 @@ const router = express.Router();
 const Comment = require("../models/comment");
 const authMiddleware = require("../middlewares/auth-middleware");
 
+//내정보 조회
 router.get("/users/me", authMiddleware, async (req, res) => {
   const { user } = res.locals;
   res.send({
@@ -13,7 +14,7 @@ router.get("/users/me", authMiddleware, async (req, res) => {
 });
 
 
-//댓글 등록
+//댓글 등록 API
 router.post("/borderList/:borderDate/comment", authMiddleware, async (req, res) => {
   const commentUserNick = res.locals.user.id;
   const { borderDate } = req.params;
@@ -30,7 +31,7 @@ router.post("/borderList/:borderDate/comment", authMiddleware, async (req, res) 
   res.send({ result: "success" });
 });
 
-//댓글 가져오기
+//댓글 가져오기 API
 router.get("/borderList/:borderDate/comment", authMiddleware, async (req, res) => {
     const userId = res.locals.user.id;
     const { borderDate } = req.params;
@@ -38,7 +39,7 @@ router.get("/borderList/:borderDate/comment", authMiddleware, async (req, res) =
     res.json({ commentList, userId })
 })
 
-//댓글 수정
+//댓글 수정 API
 router.patch("/borderList/:borderDate/comment/:commentId", authMiddleware, async (req, res) => {
   const { borderDate , commentId } = req.params;
   const { commentMain, commentCorrectDate } = req.body;
@@ -59,7 +60,7 @@ router.patch("/borderList/:borderDate/comment/:commentId", authMiddleware, async
   res.send({ result: "success" });
 });
 
-//댓글 삭제
+//댓글 삭제 API
 router.delete("/borderList/:borderDate/comment/:commentId", authMiddleware, async (req, res) => {
   const { borderDate , commentId } = req.params;
   const isBorderDate = await Comment.find({

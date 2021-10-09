@@ -2,6 +2,7 @@ const app = require("../app")
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
+//사용자 인증 미들웨어
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   const [authType, authToken] = (authorization || "").split(" ");

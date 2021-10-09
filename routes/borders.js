@@ -4,6 +4,7 @@ const Comment = require("../models/comment")
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
+//내 정보 조회 API
 router.get("/users/me", authMiddleware, async (req, res) => {
   const { user } = res.locals;
   res.send({
@@ -14,6 +15,7 @@ router.get("/users/me", authMiddleware, async (req, res) => {
 });
 
 
+//게시글 작성 API and 사용자 인증미들웨어 통과
 router.post("/borderList", authMiddleware, async (req, res) => {
   const { userId } = res.locals.user;
   //작성한 정보 가져옴
@@ -34,20 +36,22 @@ router.post("/borderList", authMiddleware, async (req, res) => {
   res.send({ result: "success" });
 });
 
+//게시글 목록 조회 API 
 router.get("/borderList", async (req, res) => {
   const borderList = await Border.find({}).sort("-borderDate");
   res.json({ borderList });
 });
 
+//상세페이지 API 게시글 조회 -> 쿼리스트링 활용
 router.get("/borderList/:borderDate", async (req, res) => {
   const { borderDate } = req.params;
   const borderDetail = await Border.findOne({ borderDate });
   res.json({ borderDetail });
 });
 
-//글 수정 페이지 서버 구축
-//수정할 페이지도 주소에 파라미터값으로 가져옴
-router.patch("/borderList/:borderDate", async (req, res) => {
+//게시글 수정 API-> 쿼리스트링 활용
+router.patch("/borderList/:borderDate", authMiddleware, async (req, res) => {
+  const { userId } = res.locals.user;
   const { borderDate } = req.params;
   const { borderUserNick, borderTitle, borderContent } = req.body;
   isBorder = await Border.find({ borderDate });
@@ -60,8 +64,9 @@ router.patch("/borderList/:borderDate", async (req, res) => {
   res.send({ result: "success" });
 });
 
-//삭제할 페이지도 주소에 파라미터값으로 가져옴
-router.delete("/borderList/:borderDate", async (req, res) => {
+//게시글 삭제 API -> 쿼리스트링 활용
+router.delete("/borderList/:borderDate", authMiddleware, async (req, res) => {
+  const { userId } = res.locals.user;
   const { borderDate } = req.params;
   const isBorder = await Border.find({ borderDate });
   const isComment = await Comment.find({ borderDate });

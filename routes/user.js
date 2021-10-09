@@ -5,7 +5,7 @@ const router = express.Router();
 const User = require("../models/user");
 const authMiddleware = require("../middlewares/auth-middleware");
 
-// 회원가입
+// 회원가입 라우터
 router.post("/users", async (req, res) => {
     const { id, password, confirmPassword } = req.body;
     if (password !== confirmPassword) {
@@ -39,8 +39,7 @@ router.post("/users", async (req, res) => {
 });
 
 
-//joi 활용 로그인
-
+//로그인 라우터
 router.post("/auth", async (req, res) => {
 
     const { id, password } = req.body;
@@ -58,6 +57,7 @@ router.post("/auth", async (req, res) => {
     });
 });
 
+//내 정보 조회 API
 router.get("/users/me", authMiddleware, async (req, res) => {
   const { user } = res.locals;
   res.send({
