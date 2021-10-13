@@ -23,15 +23,15 @@ describe('test for auth', () => {
         )
     })
 
-    it('아이디 중복', async () => {
-        const res = await supertest(app).post('/api/users').send({
-            id: 'people',
-            password: '12345678',
-            confirmPassword: '12345678',
-        })
-        expect(res.status).toBe(400)
-        expect(res.text).toBe('이미 가입된 아이디가 있습니다.')
-    })
+    // it('아이디 중복', async () => {
+    //     const res = await supertest(app).post('/api/users').send({
+    //         id: 'people',
+    //         password: '12345678',
+    //         confirmPassword: '12345678',
+    //     })
+    //     expect(res.status).toBe(400)
+    //     expect(res.text).toBe('이미 가입된 아이디가 있습니다.')
+    // })
 
     // it('아이디 양식 틀림(alphanum)', async () => {
     //     const res = await supertest(app).post('/api/users').send({
